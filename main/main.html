@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery-2.1.4.js"></script>
+    <script src="script.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <title>Concerto</title>
+</head>
+<body>
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 header">
+                    <h1>CONCERTO</h1>
+                    <div class="menu">
+                        <div class="menuitem">
+                            <h4><i class="fa fa-wrench"></i> Settings</h4>
+                        </div>
+                        <div class="menuitem" id="loc">
+                            <h4 id="loctitle">
+                                <i class="fa fa-globe"></i> Location:
+                            </h4>
+                            <div id="toggleSetLoc"><p>Set Location</p>
+                                <form>
+                                    <input name="city" id="locValue" type="text"><input id="setLoc" type="submit">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="staff">
+                    </div>
+                    <div class="eventinfo">
+                        <h3 id="artist"></h3>
+                        <h3 id="venue"></h3>
+                        <h3 id="time"></h3>
+                        <i>Click this box to close.</i>
+                    </div>
+                </div>
+            </div>
+    </div>
+</body>
+</html>
