@@ -2,62 +2,93 @@ window.daEvents = {
     bleah: new Array(),
     eh: function(evts) {
         this.bleah = evts;
-    }
+    },
+    cycle: 5000
 };
-
-$(window).on("load", function() {
-     if (!window.location.href.substring(window.location.href.lastIndexOf("?") + 1).match(/city=[a-zA-Z]/)) {
-     $.getJSON("http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
+$(document).ready(function() {
+    $("#cycle").val( window.daEvents.cycle);
+    var meh = function() {
+    if (!window.location.href.substring(window.location.href.lastIndexOf("?") + 1).match(/city=[a-zA-Z]/)) {
+        $.getJSON("http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
              function (data) {
-                 $("#loctitle").append(data.resultsPage.results.location[0].metroArea.displayName + ", " + data.resultsPage.results.location[0].metroArea.state.displayName);
+                 $("#loctitle").html('<i class="fa fa-globe"></i> Location: ' + data.resultsPage.results.location[0].metroArea.displayName + ", " + data.resultsPage.results.location[0].metroArea.state.displayName);
              });
 
-         $.getJSON("http://api.songkick.com/api/3.0/events.json?location=clientip&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
+        var today = new Date();
+        if (window.daEvents.bleah.length > 0) {
+            var diff = 0;
+            while (diff < 0) {
+                diff = Date.parse(window.daEvents.bleah[0].start.date) - today.getTime();
+                if (diff < 0) {
+                    var eh = window.daEvents.bleah.shift();
+                    $(".staff").children()[0].remove();
+                }
+            }
+        }
+
+        $.getJSON("http://api.songkick.com/api/3.0/events.json?location=clientip&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
              function (data) {
                  var events = data.resultsPage.results.event;
+                 var ik;
+                 var l = events.length - 1;
+                 for (ik = 0; ik < l; ik++) {
+                     if (Date.parse(events[ik].start.date) - today.getTime() > 5259492000) {
+                        break;
+                     }
+                 }
+                 while (l > ik) {
+                     events.pop();
+                     l--;
+                 }
+                 var oldEvents = window.daEvents.bleah;
                  window.daEvents.eh(events);
                  if (events !== undefined) {
+                     $("#objectsRet").text('Objects Returned: ' + events.length);
                      for (var i = 0; i < events.length; i++) {
-                         var node = $('<div><img src="0001.png"></div>');
-                         var number = Math.floor(Math.random() * 11) + 1;
-                         var retval = "note ";
-                         switch (number) {
-                             case 1:
-                                 retval += "d";
-                                 break;
-                             case 2:
-                                 retval += "e";
-                                 break;
-                             case 3:
-                                 retval += "f";
-                                 break;
-                             case 4:
-                                 retval += "g";
-                                 break;
-                             case 5:
-                                 retval += "a";
-                                 break;
-                             case 6:
-                                 retval += "b";
-                                 break;
-                             case 7:
-                                 retval += "c";
-                                 break;
-                             case 8:
-                                 retval += "d1";
-                                 break;
-                             case 9:
-                                 retval += "e1";
-                                 break;
-                             case 10:
-                                 retval += "f1";
-                                 break;
-                             case 11:
-                                 retval += "g1";
-                                 break;
-                         }
-                         node.addClass(retval);
-                         $(".staff").append(node);
+                         if (oldEvents.map(function (o) {
+                                 return o.displayName;
+                             }).indexOf(events[i].displayName) < 0) {
+                            var node = $('<div><img src="0001.png"></div>');
+                            var number = Math.floor(Math.random() * 11) + 1;
+                            var retval = "note ";
+                            switch (number) {
+                                 case 1:
+                                    retval += "d";
+                                    break;
+                                 case 2:
+                                    retval += "e";
+                                    break;
+                                 case 3:
+                                    retval += "f";
+                                    break;
+                                 case 4:
+                                    retval += "g";
+                                    break;
+                                 case 5:
+                                    retval += "a";
+                                    break;
+                                 case 6:
+                                    retval += "b";
+                                    break;
+                                 case 7:
+                                    retval += "c";
+                                     break;
+                                 case 8:
+                                     retval += "d1";
+                                     break;
+                                case 9:
+                                    retval += "e1";
+                                    break;
+                                case 10:
+                                     retval += "f1";
+                                    break;
+                                case 11:
+                                     retval += "g1";
+                                    break;
+                            }
+                            node.addClass(retval);
+                            $(".staff").append(node);
+                        }
                      }
                  }
              });
@@ -67,7 +98,7 @@ $(window).on("load", function() {
          var locID = {
              p: "",
              meh: function(data) {
-                 $("#loctitle").append(data.resultsPage.results.location[0].metroArea.displayName + ", " + data.resultsPage.results.location[0].metroArea.state.displayName);
+                 $("#loctitle").html('<i class="fa fa-globe"></i> Location: ' + data.resultsPage.results.location[0].metroArea.displayName + ", " + data.resultsPage.results.location[0].metroArea.state.displayName);
                  this.p = data.resultsPage.results.location[0].metroArea.id;
                  funky.pok(this.p);
              }
@@ -75,51 +106,79 @@ $(window).on("load", function() {
 
          var funky = {
              pok: function(p) {$.getJSON("http://api.songkick.com/api/3.0/metro_areas/" + p +"/calendar.json?&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
-             function (merr) {
-                 var events = merr.resultsPage.results.event;
+             function (data) {
+                 var today = new Date();
+                 if (window.daEvents.bleah.length > 0) {
+                     var diff = 0;
+                     while (diff < 0) {
+                         diff = Date.parse(window.daEvents.bleah[0].start.date) - today.getTime();
+                         if (diff < 0) {
+                             window.daEvents.bleah.shift();
+                             $(".staff").children()[0].remove();
+                         }
+                     }
+                 }
+                 var events = data.resultsPage.results.event;
+                 var ik;
+                 var l = events.length - 1;
+                 for (ik = 0; ik < l; ik++) {
+                     if (Date.parse(events[ik].start.date) - today.getTime() > 5259492000) {
+                         break;
+                     }
+                 }
+                 while (l > ik) {
+                     events.pop();
+                     l--;
+                 }
+                 var oldEvents = window.daEvents.bleah;
                  window.daEvents.eh(events);
                  if (events !== undefined) {
+                     $("#objectsRet").text('Objects Returned: ' + events.length);
                      for (var i = 0; i < events.length; i++) {
-                         var node = $('<div><img src="0001.png"></div>');
-                         var number = Math.floor(Math.random() * 11) + 1;
-                         var retval = "note ";
-                         switch (number) {
-                             case 1:
-                                 retval += "d";
-                                 break;
-                             case 2:
-                                 retval += "e";
-                                 break;
-                             case 3:
-                                 retval += "f";
-                                 break;
-                             case 4:
-                                 retval += "g";
-                                 break;
-                             case 5:
-                                 retval += "a";
-                                 break;
-                             case 6:
-                                 retval += "b";
-                                 break;
-                             case 7:
-                                 retval += "c";
-                                 break;
-                             case 8:
-                                 retval += "d1";
-                                 break;
-                             case 9:
-                                 retval += "e1";
-                                 break;
-                             case 10:
-                                 retval += "f1";
-                                 break;
-                             case 11:
-                                 retval += "g1";
-                                 break;
+                         if (oldEvents.map(function (o) {
+                                 return o.displayName;
+                             }).indexOf(events[i].displayName) < 0) {
+                             var node = $('<div><img src="0001.png"></div>');
+                             var number = Math.floor(Math.random() * 11) + 1;
+                             var retval = "note ";
+                             switch (number) {
+                                 case 1:
+                                     retval += "d";
+                                     break;
+                                 case 2:
+                                     retval += "e";
+                                     break;
+                                 case 3:
+                                     retval += "f";
+                                     break;
+                                 case 4:
+                                     retval += "g";
+                                     break;
+                                 case 5:
+                                     retval += "a";
+                                     break;
+                                 case 6:
+                                     retval += "b";
+                                     break;
+                                 case 7:
+                                     retval += "c";
+                                     break;
+                                 case 8:
+                                     retval += "d1";
+                                     break;
+                                 case 9:
+                                     retval += "e1";
+                                     break;
+                                 case 10:
+                                     retval += "f1";
+                                     break;
+                                 case 11:
+                                     retval += "g1";
+                                     break;
+                             }
+                             node.addClass(retval);
+                             $(".staff").append(node);
                          }
-                         node.addClass(retval);
-                         $(".staff").append(node);
                      }
                  }
              });
@@ -128,9 +187,11 @@ $(window).on("load", function() {
 
          $.getJSON("http://api.songkick.com/api/3.0/search/locations.json?query=" + query + "&apikey=jSekVKcNCSbfC91H&jsoncallback=?", locID.meh);
      }
-});
+    }
 
- $(document).ready(function() {
+    meh();
+    setInterval(meh, window.daEvents.cycle);
+
      $("#toggleSetLoc").toggle();
      $(".eventinfo").hide();
      $("body").on('click', '.note', function() {
@@ -151,4 +212,8 @@ $(window).on("load", function() {
 
          });
      });
+
+    $("#cycle").change(function (){
+        window.daEvents.cycle = Number($(this).val());
+    })
  });

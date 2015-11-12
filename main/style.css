@@ -9,8 +9,9 @@
     position: relative;
     left: 0;
     right: 0;
-    overflow: auto;
+    overflow-x: auto;
     white-space: nowrap;
+    overflow-y: hidden;
 }
 
 .note {
