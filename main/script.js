@@ -5,8 +5,14 @@ window.daEvents = {
     },
     cycle: 5000
 };
+
+
+
+
+
 $(document).ready(function() {
     $("#cycle").val( window.daEvents.cycle);
+
     var meh = function() {
     if (!window.location.href.substring(window.location.href.lastIndexOf("?") + 1).match(/city=[a-zA-Z]/)) {
         $.getJSON("http://api.songkick.com/api/3.0/search/locations.json?location=clientip&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
@@ -28,9 +34,11 @@ $(document).ready(function() {
 
         $.getJSON("http://api.songkick.com/api/3.0/events.json?location=clientip&apikey=jSekVKcNCSbfC91H&jsoncallback=?",
              function (data) {
+
                  var events = data.resultsPage.results.event;
                  var ik;
                  var l = events.length - 1;
+
                  for (ik = 0; ik < l; ik++) {
                      if (Date.parse(events[ik].start.date) - today.getTime() > 5259492000) {
                         break;
@@ -63,6 +71,7 @@ $(document).ready(function() {
                                     break;
                                  case 4:
                                     retval += "g";
+
                                     break;
                                  case 5:
                                     retval += "a";
@@ -92,6 +101,7 @@ $(document).ready(function() {
                      }
                  }
              });
+
      }
      else {
          var query = window.location.href.substring(window.location.href.lastIndexOf("?") + 1).split("=")[1];
@@ -141,12 +151,14 @@ $(document).ready(function() {
                              var node = $('<div><img src="0001.png"></div>');
                              var number = Math.floor(Math.random() * 11) + 1;
                              var retval = "note ";
+                             
                              switch (number) {
                                  case 1:
                                      retval += "d";
                                      break;
                                  case 2:
                                      retval += "e";
+
                                      break;
                                  case 3:
                                      retval += "f";
@@ -186,21 +198,31 @@ $(document).ready(function() {
          };
 
          $.getJSON("http://api.songkick.com/api/3.0/search/locations.json?query=" + query + "&apikey=jSekVKcNCSbfC91H&jsoncallback=?", locID.meh);
+         
+
+
      }
     }
+
+
 
     meh();
     setInterval(meh, window.daEvents.cycle);
 
      $("#toggleSetLoc").toggle();
      $(".eventinfo").hide();
+
+
      $("body").on('click', '.note', function() {
          var j = $(this).prevAll().length;
+         var note = $(this).attr('class');
          $("#artist").text(window.daEvents.bleah[j].performance[0].displayName);
          $("#venue").text(window.daEvents.bleah[j].venue.displayName);
          $("#time").text(window.daEvents.bleah[j].start.date + " " + window.daEvents.bleah[j].start.time);
          $(".eventinfo").hide();
          $(".eventinfo").toggle(100);
+        var audio = new Audio("mp3notes/" + note + ".mp3");
+        audio.play();
      });
 
      $("body").on('click', '.eventinfo', function() {
