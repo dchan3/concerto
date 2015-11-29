@@ -6,10 +6,6 @@ window.daEvents = {
     cycle: 5000
 };
 
-
-
-
-
 $(document).ready(function() {
     $("#cycle").val( window.daEvents.cycle);
 
@@ -151,7 +147,7 @@ $(document).ready(function() {
                              var node = $('<div><img src="0001.png"></div>');
                              var number = Math.floor(Math.random() * 11) + 1;
                              var retval = "note ";
-                             
+
                              switch (number) {
                                  case 1:
                                      retval += "d";
@@ -198,7 +194,7 @@ $(document).ready(function() {
          };
 
          $.getJSON("http://api.songkick.com/api/3.0/search/locations.json?query=" + query + "&apikey=jSekVKcNCSbfC91H&jsoncallback=?", locID.meh);
-         
+
 
 
      }
@@ -218,7 +214,12 @@ $(document).ready(function() {
          var note = $(this).attr('class');
          $("#artist").text(window.daEvents.bleah[j].performance[0].displayName);
          $("#venue").text(window.daEvents.bleah[j].venue.displayName);
-         $("#time").text(window.daEvents.bleah[j].start.date + " " + window.daEvents.bleah[j].start.time);
+         if (window.daEvents.bleah[j].start.time !== null) {
+            $("#time").text(new Date(Date.parse(window.daEvents.bleah[j].start.date + " " + window.daEvents.bleah[j].start.time)));
+         }
+         else {
+            $("#time").text(new Date(Date.parse(window.daEvents.bleah[j].start.date)).toDateString());
+         }
          $(".eventinfo").hide();
          $(".eventinfo").toggle(100);
         var audio = new Audio("mp3notes/" + note + ".mp3");
